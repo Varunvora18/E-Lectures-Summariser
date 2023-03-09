@@ -1,0 +1,41 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<h3>Indexed Video</h3>
+
+<div style="margin: 10px auto;">
+    <!-- <video width="320" height="240" controls="controls" preload="preload">
+        <source src="{{ url_for('display_video', filename=v.path) }}" type="video/mp4"></source>
+    </video> -->
+
+    <figure>
+        <video id="lecture{{v.vid}}" width="320" height="240" controls="controls" preload="preload">
+            <source src="{{ url_for('display_video', filename=v.path) }}" type="video/mp4"></source>
+            <!-- <track id="indexes" kind="chapters" label="Topics" src="{{ url_for('display_track', filename=v.path) }}" srclang="en" default onload="displayChapters()">     -->
+            <!-- <track kind="chapters" id="indexes" src="{{ url_for('display_track', filename=v.path) }}" srclang="en" default onload="displayChapters(this)"> -->
+        </video>
+        <figcaption>
+            <ol id="chapters{{v.vid}}">
+                {% for c in v.chapters %}
+                <li id="{{c.start}}" value="{{v.vid}}" onclick="setTime(this.id,this.value)">{{c.title}}</li>
+                {% endfor %}
+            </ol>
+        </figcaption>
+    </figure>
+
+    <script>
+        function setTime(time,value){
+            var locations = [].slice.call(document.querySelectorAll("#chapters"+value+" li"));
+            for (var i = 0; i < locations.length; ++i) { 
+                locations[i].classList.remove("current");
+            }
+            video = document.getElementById('lecture'+value);
+            video.currentTime = time;
+            document.getElementById(time).classList.add("current");
+        }
+    </script>
+
+   </div>
+
+{% endblock %}
